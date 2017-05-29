@@ -1,4 +1,4 @@
-package dankclient;
+package dk.weebsystems.helpdesk;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -16,7 +16,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
-public class searchwindow extends JFrame implements ActionListener{
+public class SearchWindow extends JFrame implements ActionListener{
       //defining stuff
       public JFrame frame1 = new JFrame();
       public JLabel label1 = new JLabel("Title");
@@ -27,7 +27,6 @@ public class searchwindow extends JFrame implements ActionListener{
       public JTextArea resultbox = new JTextArea();
       public String searchin;
       JScrollPane sp = new JScrollPane(resultbox);
-      public window jf = new window();
       public ResultSet rs;
       public Statement st; 
      
@@ -36,7 +35,7 @@ public class searchwindow extends JFrame implements ActionListener{
     public void searchwindow(){
          
         //window properties
-        frame1.setTitle("Dank Client");
+        frame1.setTitle("Help Desk Manager");
         frame1.setSize(800,600);
         frame1.setResizable(false);
         frame1.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -81,7 +80,7 @@ public class searchwindow extends JFrame implements ActionListener{
         
     }
    //what happens when user clicks on a button
-     @Override
+
      public void actionPerformed(ActionEvent e){
         if(e.getSource() == button1){   
            try{

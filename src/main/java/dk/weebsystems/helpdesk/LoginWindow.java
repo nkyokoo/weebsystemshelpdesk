@@ -1,4 +1,4 @@
-package dankclient;
+package dk.weebsystems.helpdesk;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class window extends JFrame implements ActionListener {
+public class LoginWindow extends JFrame implements ActionListener {
 
     //defining stuff
     public JFrame frame = new JFrame();
@@ -34,13 +34,15 @@ public class window extends JFrame implements ActionListener {
     public JButton button1 = new JButton("login");
     public String usernames;
     public String passwords;
+    public String receivedpassword;
     public Connection con;
     public Statement st;
+    public ResultSet rs;
 
     public void window() {
 
         //window properties
-        frame.setTitle("Dank Client");
+        frame.setTitle("Help Desk Manager");
         frame.setSize(400, 400);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -79,7 +81,6 @@ public class window extends JFrame implements ActionListener {
         button1.setBounds(180, 170, 70, 20);
         button1.addActionListener(this);
 
-        //adding panel to the frame and adding objects to the panel itself
         jpl.add(label1);
         jpl.add(usernamefield);
         jpl.add(passwordfield);
@@ -92,59 +93,57 @@ public class window extends JFrame implements ActionListener {
 
     }
 
-    //what happens when a user clicks on a button
-    @Override
+
     public void actionPerformed(ActionEvent e) {
-        //getting username and putting into a string
-        usernames = usernamefield.getText();
-        char[] passwordchar = passwordfield.getPassword(); // getting password and putting it in to a char array
-        passwords = String.valueOf(passwordchar); // making char into a string
-        if(usernames == "" && passwords  == ""){
-            System.out.println("please type a password in!");
-            
-        }else{
+
+
         try {
-            //calling the sql server driver for java
+
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            //making a connection with username and password 
-            con = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-3IOCURI\\SQLEXPRESS:1433;DatabaseName=dankmemes;", usernames, passwords);
-            System.out.println("connecting...");
-            System.out.println(con);
-            //creating statment
+
+            con = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-3IOCURI\\SQLEXPRESS:1433;DatabaseName=helpdesk;","sa", "kek1234");
+            usernames = usernamefield.getText();
+            char[] passwordchar = passwordfield.getPassword(); // getting password and putting it in to a char array
+            passwords = String.valueOf(passwordchar); // making char into a string
+
             System.out.println(st);
             st = con.createStatement();
 
-            //catching bad exceptions such as if the password is wrong, ect.  
-        } catch (Exception ex) {
-            System.out.println("error: " + ex);
-            label4.setText("username or password is WRONG!");
+            String query = "SELECT * FROM dbo.users WHERE username = '"+usernames+"'";
+
+            rs = st.executeQuery(query);
+
+            while(rs.next()) {
+                receivedpassword = rs.getString("password");
 
             }
-        }
+
+
+        } catch (Exception ex) {
+            System.out.println("error: " + ex);
+
+
+            }
+
 
         try {
-            //checking if connection is not closed
-            if (!st.isClosed()) {
-                System.out.println("connected");
+            if (passwords.equals(receivedpassword)) {
+                System.out.println(usernames+ " logged in" );
                 System.out.println("starting second frame..");
-                //sets the login frame to be invisible 
                 frame.setVisible(false);
-                //releasing the resources the login frame used.
                 frame.dispose();
-                //calling a new frame which is where the search takes place
-                searchwindow sf = new searchwindow();
+                SearchWindow sf = new SearchWindow();
                 sf.searchwindow();
                 sf.frame1.setVisible(true);
-                //remembering to give the new frame a juicy gift. the statement. 
-                //this is important. if you dont parse the statement to the second frame, it will not work! 
+
                 sf.st = st;
 
             } else {
+                label4.setText("Wrong Username or Password.");
 
-                //what else todo? nothing really, this else isn't really needed.
             }
         } catch (Exception ex) {
-            System.out.println("not connected! either server not running or wrong username/password!");
+            System.out.println("Database server is down!");
         }
 
     }
