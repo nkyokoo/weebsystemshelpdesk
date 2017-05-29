@@ -1,0 +1,15 @@
+group 'helpdesk'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.5
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
+}
