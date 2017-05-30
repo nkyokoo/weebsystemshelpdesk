@@ -32,6 +32,7 @@ public class LoginWindow extends JFrame implements ActionListener {
     public JPasswordField passwordfield = new JPasswordField();
     public JPanel jpl = new JPanel();
     public JButton button1 = new JButton("login");
+    public JButton button2 = new JButton("register");
     public String usernames;
     public String passwords;
     public String receivedpassword;
@@ -80,6 +81,8 @@ public class LoginWindow extends JFrame implements ActionListener {
         //button
         button1.setBounds(180, 170, 70, 20);
         button1.addActionListener(this);
+        button2.setBounds(100, 170, 80, 20);
+        button2.addActionListener(this);
 
         jpl.add(label1);
         jpl.add(usernamefield);
@@ -88,6 +91,7 @@ public class LoginWindow extends JFrame implements ActionListener {
         jpl.add(label2);
         jpl.add(label3);
         jpl.add(label4);
+        jpl.add(button2);
         frame.add(jpl);
         frame.validate();
 
@@ -96,56 +100,68 @@ public class LoginWindow extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
 
-
-        try {
-
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-
-            con = DriverManager.getConnection("jdbc:sqlserver://DESKTOP-3IOCURI\\SQLEXPRESS:1433;DatabaseName=helpdesk;","sa", "kek1234");
-            usernames = usernamefield.getText();
-            char[] passwordchar = passwordfield.getPassword(); // getting password and putting it in to a char array
-            passwords = String.valueOf(passwordchar); // making char into a string
-
-            System.out.println(st);
-            st = con.createStatement();
-
-            String query = "SELECT * FROM dbo.users WHERE username = '"+usernames+"'";
-
-            rs = st.executeQuery(query);
-
-            while(rs.next()) {
-                receivedpassword = rs.getString("password");
-
-            }
+if(e.getSource() == button1) {
+    try {
 
 
-        } catch (Exception ex) {
-            System.out.println("error: " + ex);
+        Class.forName("com.mysql.jdbc.Driver");
 
+        con = DriverManager.getConnection("jdbc:mysql://localhost/helpdesk?user=root");
+        usernames = usernamefield.getText();
+        char[] passwordchar = passwordfield.getPassword(); // getting password and putting it in to a char array
+        passwords = String.valueOf(passwordchar); // making char into a string
 
-            }
+        System.out.println(st);
+        st = con.createStatement();
 
+        String query = "SELECT * FROM agents WHERE username = '" + usernames + "'";
 
-        try {
-            if (passwords.equals(receivedpassword)) {
-                System.out.println(usernames+ " logged in" );
-                System.out.println("starting second frame..");
-                frame.setVisible(false);
-                frame.dispose();
-                SearchWindow sf = new SearchWindow();
-                sf.searchwindow();
-                sf.frame1.setVisible(true);
+        rs = st.executeQuery(query);
 
-                sf.st = st;
+        while (rs.next()) {
+            receivedpassword = rs.getString("password");
 
-            } else {
-                label4.setText("Wrong Username or Password.");
-
-            }
-        } catch (Exception ex) {
-            System.out.println("Database server is down!");
         }
+
+
+    } catch (Exception ex) {
+        System.out.println("error: " + ex);
+
 
     }
 
-}
+
+    try {
+        if (passwords.equals(receivedpassword)) {
+            System.out.println(usernames + " logged in");
+            System.out.println("starting second frame..");
+            frame.setVisible(false);
+            frame.dispose();
+            SearchWindow sf = new SearchWindow();
+            sf.searchwindow();
+            sf.frame1.setVisible(true);
+
+            sf.st = st;
+
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    "Wrong password or username!",
+                    "error",
+                    JOptionPane.WARNING_MESSAGE);
+
+        }
+    } catch (Exception ex) {
+        System.out.println("Database server is down!");
+    }
+} if(e.getSource() == button2) {
+           frame.setVisible(false);
+           frame.dispose();
+            RegisterWindow rf = new RegisterWindow();
+            rf.registerwindow();
+            rf.frame2.setVisible(true);
+
+            }
+        }
+    }
+
+

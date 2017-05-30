@@ -83,17 +83,17 @@ public class SearchWindow extends JFrame implements ActionListener{
 
      public void actionPerformed(ActionEvent e){
         if(e.getSource() == button1){   
-           try{
+          /* try{
             
                //getting and putting input from the JTextField into a string
                String searchin = searchfield.getText();  
                //making a query
-               String query = "SELECT * FROM dbo.users WHERE username like '"+searchin+"' or firstname like '"+searchin+"' or lastname like '"+searchin+"' or country like '"+searchin+"'";
-               //executing and storing data in resultset
-               rs = st.executeQuery(query); 
-               //calling while loop  
+               String query = "SELECT * FROM cases WHERE username like '"+searchin+"' or firstname like '"+searchin+"' or lastname like '"+searchin+"' or country like '"+searchin+"'";
+
+               rs = st.executeQuery(query);
+
                    while(rs.next()){
-                  //getting data from rs     
+
                    String username = rs.getString("username");
                    String firstname = rs.getString("firstname");
                    String lastname = rs.getString("lastname");
@@ -110,32 +110,28 @@ public class SearchWindow extends JFrame implements ActionListener{
                }catch(SQLException ex){
                   System.out.println(ex);
                   
-                     }
+                     }*/
                    }if(e.getSource() == button2){   
            try{
-            
-               //getting and putting input from the JTextField into a string
-               String searchin = searchfield.getText();  
-               //making a query
-               String query = "SELECT * FROM dbo.users";
-               //executing and storing data in resultset
-               rs = st.executeQuery(query); 
-               //calling while loop  
+               String query = "SELECT agents.username, FROM cases" +
+                       "FULL JOIN agents ON Orders.CustomerID=Customers.CustomerID;";
+               rs = st.executeQuery(query);
                    while(rs.next()){
-                  //getting data from rs     
-                   String username = rs.getString("username");
-                   String firstname = rs.getString("firstname");
-                   String lastname = rs.getString("lastname");
-                   String email = rs.getString("email");
-                   String country = rs.getString("country");
-                   String ip = rs.getString("ip");
-                   String mac = rs.getString("mac");
-                   String city = rs.getString("city");
-                   //setting the text in an JTextArea to be the data from the database 
-                   resultbox.setText("username: " + username + System.lineSeparator() + " firstname: " + firstname +  System.lineSeparator() + " lastname: " + lastname + System.lineSeparator() + " email: " + email +System.lineSeparator() + " city: " + city + System.lineSeparator() + " country: " + country + System.lineSeparator() + " ip: " + ip + System.lineSeparator() + " mac: " + mac);
+
+
+                   String casename = rs.getString("casename");
+                   String casediscription = rs.getString("casediscription");
+                   String resovled = rs.getString("resolved");
+                   String resovledstr = "";
+                        if(resovled.equals("0")){
+                            resovledstr = "false";
+                       }if(resovled.equals("1")){
+                            resovledstr = "true";
+                       }
+
+                   resultbox.setText("case name: " + casename +System.lineSeparator() + " case discription: " + casediscription + System.lineSeparator() + "resovled: " + resovledstr);
                    
                  }
-               //handling exceptions, preventing unnesecary crashes
                }catch(SQLException ex){
                   System.out.println(ex);
             

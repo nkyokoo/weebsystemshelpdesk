@@ -8,7 +8,8 @@ public class HelpDesk {
        
        LoginWindow jf = new  LoginWindow();
        jf.window();
-      
+        RegisterWindow rf = new RegisterWindow();
+        rf.registerwindow();
        SearchWindow sf = new SearchWindow();
        sf.searchwindow();
        
